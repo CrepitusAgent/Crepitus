@@ -1,111 +1,85 @@
 # Crepitus Protocol
 
-A DeFi protocol for synthetic equity trading on the EVM. Lock $CREP as collateral, mint synthetic shares of real-world assets (sAAPL, sTSLA, etc.) priced via oracle feeds, and route yield across venues automatically.
+> **Status: unaudited testnet research. Do not use with real funds.**
 
-## Architecture
+Crepitus is an experimental EVM protocol project exploring collateralized synthetic assets. The repository is being built in verifiable milestones; features are documented as available only after their source code and tests are committed.
 
-```
-                    ┌──────────────┐
-                    │  CREPToken   │  ERC-20 collateral token (capped supply)
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────────┐
-                    │ CollateralVault  │  Locks CREP, tracks per-wallet debt
-                    └──────┬───────────┘
-                           │
-            ┌──────────────▼──────────────┐
-            │    SyntheticEquity           │  Mints/redeems sEQ shares
-            │    (reads IOracle prices)    │  against locked collateral
-            └──────────────┬──────────────┘
-                           │
-                    ┌──────▼───────────┐
-                    │  RouteReserve    │  Per-venue pools + agent rebalancing
-                    └──────────────────┘
-```
+## What exists now
 
-### Smart Contracts
+- `CREPToken.sol`: capped ERC-20 prototype with permit support and role-based minting.
+- `MockOracle.sol`: mutable local/testnet oracle with 8-decimal prices.
+- Hardhat 3 contract compilation, TypeScript tests, and Ignition deployment.
+- React status page.
+- GitHub Actions checks.
 
-| Contract | Purpose |
-|---|---|
-| `CREPToken.sol` | ERC-20 collateral token with mint/burn access control, capped at 1B supply, EIP-2612 permit support |
-| `CollateralVault.sol` | Locks $CREP, enforces minimum collateral ratio (150% default), tracks per-wallet debt shares |
-| `SyntheticEquity.sol` | Mints/redeems synthetic shares using oracle NAV, enforces staleness checks, charges mint fee |
-| `RouteReserve.sol` | Manages per-venue CREP pools, agent-triggered rebalancing, on-chain rebalance history |
-| `IOracle.sol` | Price feed interface (8-decimal USD price + last-updated timestamp) |
+## What does not exist yet
 
-### Off-chain Components
+Collateral custody, debt accounting, liquidation, synthetic-equity issuance, production oracle integrations, route reserves, governance, audits, and mainnet deployments are not implemented.
 
-- **Supabase** — stores agent state, oracle feed snapshots, rebalance history, user deposits, alerts
-- **Edge Functions** — `crepitus-agent` (rebalancing), `crepitus-oracle` (price sync), `crepitus-mint` (mint/redeem), `crepitus-chat` (AI assistant), `crepitus-tick` (scheduler)
-- **Frontend** — Vite + React + TypeScript dashboard with live polling, charts, and wallet integration
+## Requirements
 
-## Setup
+- Node.js 22.13.0 or newer
+- npm 10 or newer
 
-### Prerequisites
-
-- Node.js 20+
-- MetaMask or any EVM wallet
-
-### Install
+## Install
 
 ```bash
 npm install
 ```
 
-### Compile Contracts
+Commit the generated `package-lock.json`. After that, CI and fresh clones should use:
 
 ```bash
-npx hardhat compile
+npm ci
 ```
 
-### Run Frontend
-
-The dev server starts automatically. To build for production:
+## Verify the repository
 
 ```bash
-npm run build
+npm run check
+npm run audit:runtime
 ```
 
-### Deploy Contracts
+The first command runs linting, Solidity compilation, TypeScript checking, contract tests, and the frontend production build. The second checks production/runtime dependencies for high-severity advisories.
 
-Set these environment variables:
-
-```
-DEPLOYER_PRIVATE_KEY=0x...
-SEPOLIA_RPC_URL=https://rpc.sepolia.org
-```
-
-Then:
+## Local frontend
 
 ```bash
-npx hardhat run scripts/deploy.ts --network sepolia
+npm run dev
 ```
 
-After deployment, set the contract addresses in `.env`:
+## Local simulated deployment
 
-```
-VITE_CREP_TOKEN_ADDRESS=0x...
-VITE_COLLATERAL_VAULT_ADDRESS=0x...
-VITE_SYNTHETIC_EQUITY_ADDRESS=0x...
-VITE_ROUTE_RESERVE_ADDRESS=0x...
-VITE_ORACLE_ADDRESS=0x...
+```bash
+npm run contracts:deploy:local
 ```
 
-## Collateral Flow
+## Sepolia deployment
 
-1. **Acquire CREP** — minted by the treasury role or purchased on DEX
-2. **Lock collateral** — call `CollateralVault.depositCollateral(amount)` after approving the vault
-3. **Mint synthetic shares** — call `SyntheticEquity.mint(assetId, crepAmount)`; the contract checks the oracle price and enforces the collateral ratio
-4. **Redeem** — call `SyntheticEquity.redeem(assetId, shares)` to burn shares and receive CREP back
-5. **Withdraw collateral** — call `CollateralVault.withdrawCollateral(amount)` once debt is cleared
+Copy `.env.example` to `.env`, enter test-only credentials, and run:
+
+```bash
+npm run contracts:deploy:sepolia
+```
+
+Never use a wallet that controls real funds. Values prefixed with `VITE_` are public browser configuration and must never contain secrets.
+
+## Repository layout
+
+```text
+contracts/          Solidity source
+contracts/interfaces/ Shared contract interfaces
+contracts/mocks/    Local and testnet-only contracts
+test/               TypeScript smart-contract tests
+ignition/modules/   Declarative deployments
+src/                React frontend
+docs/               Architecture and security documentation
+.github/workflows/  Continuous integration
+```
 
 ## Security
 
-- All contracts use OpenZeppelin's `AccessControl`, `ReentrancyGuard`, and `SafeERC20`
-- Oracle prices have a 1-hour staleness window
-- Minimum collateral ratio is 150% (configurable by admin)
-- $CREP supply is hard-capped at 1 billion tokens
-- Rebalances require the `AGENT_ROLE` and emit on-chain audit events
+Read [SECURITY.md](SECURITY.md) and [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md). There is no audit or bug bounty yet.
 
 ## License
 
