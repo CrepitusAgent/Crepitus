@@ -1,36 +1,41 @@
-	
-name	"crepitus-protocol"
-private	true
-version	"0.1.0"
-type	"module"
-engines	
-node	">=22.13.0"
-scripts	
-dev	"vite"
-build	"tsc -b && vite build"
-preview	"vite preview"
-lint	"oxlint ."
-typecheck	"tsc -b --pretty false"
-contracts:compile	"hardhat build"
-contracts:test	"hardhat test nodejs"
-contracts:deploy:local	"hardhat ignition deploy ignition/modules/Dev.ts"
-contracts:deploy:sepolia	"hardhat ignition deploy ignition/modules/Dev.ts --network sepolia"
-audit:runtime	"npm audit --omit=dev --audit-level=high"
-check	"npm run lint && npm run contracts:compile && npm run typecheck && npm run contracts:test && npm run build"
-test	"npm run contracts:test"
-dependencies	
-@openzeppelin/contracts	"^5.6.1"
-react	"^19.2.7"
-react-dom	"^19.2.7"
-devDependencies	
-@nomicfoundation/hardhat-ignition	"^3.1.8"
-@nomicfoundation/hardhat-toolbox-viem	"^5.0.7"
-@types/node	"^24.13.2"
-@types/react	"^19.2.17"
-@types/react-dom	"^19.2.3"
-@vitejs/plugin-react	"^6.0.3"
-hardhat	"^3.11.0"
-oxlint	"^1.71.0"
-typescript	"~6.0.3"
-viem	"^2.47.6"
-vite	"^8.1.5"
+{
+  "name": "crepitus-protocol",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint .",
+    "typecheck": "tsc -b --pretty false",
+    "contracts:compile": "hardhat build",
+    "contracts:test": "hardhat test nodejs",
+    "contracts:deploy:local": "hardhat ignition deploy ignition/modules/Dev.ts",
+    "contracts:deploy:sepolia": "hardhat ignition deploy ignition/modules/Dev.ts --network sepolia",
+    "audit:runtime": "npm audit --omit=dev --audit-level=high",
+    "check": "npm run lint && npm run contracts:compile && npm run typecheck && npm run contracts:test && npm run build",
+    "test": "npm run contracts:test"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.8",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.7",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "hardhat": "^3.11.0",
+    "oxlint": "^1.71.0",
+    "typescript": "~6.0.3",
+    "viem": "^2.47.6",
+    "vite": "^8.1.5"
+  }
+}
