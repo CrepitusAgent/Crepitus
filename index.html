@@ -2,16 +2,61 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crepitus Agent - Yield Layer for Tokenized Stocks & RWAs</title>
-    <meta name="description" content="The yield layer for your tokenized stocks and RWAs, always parked at the best paying venue." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="Crepitus is an unaudited, testnet-only synthetic asset protocol research project."
+    />
+
+    <meta name="theme-color" content="#0b1020" />
+
+    <title>Crepitus Protocol</title>
   </head>
+
   <body>
-    <div id="root"></div>
+    <noscript>
+      <div
+        style="
+          padding: 24px;
+          font-family: Arial, sans-serif;
+          background: #0b1020;
+          color: white;
+          min-height: 100vh;
+        "
+      >
+        JavaScript is required to run the Crepitus application.
+      </div>
+    </noscript>
+
+    <div id="root">
+      <div
+        style="
+          display: flex;
+          min-height: 100vh;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          box-sizing: border-box;
+          font-family: Arial, sans-serif;
+          background: #0b1020;
+          color: white;
+          text-align: center;
+        "
+      >
+        <div>
+          <h1 style="margin-bottom: 12px">Crepitus</h1>
+          <p style="margin: 0; color: #aab4d0">
+            Loading the testnet application…
+          </p>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
